@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Odyssey Plan</title>
+<style>
+  :root {
+    --bg: #edf0f4;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #17202b;
+    --ink-muted: #57626f;
+    --ink-faint: #8992a0;
+    --line: rgba(23, 32, 43, 0.14);
+    --shadow: 0 1px 2px rgba(23, 32, 43, 0.06), 0 8px 24px rgba(23, 32, 43, 0.06);
+    --font-display: Iowan Old Style, Palatino Linotype, Palatino, Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --a: #b8792a;   /* Plan A — brass */
+    --a-ink: #ffffff;
+    --b: #2f7d74;   /* Plan B — verdigris */
+    --b-ink: #ffffff;
+    --c: #b5473a;   /* Plan C — signal red */
+    --c-ink: #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1420;
+      --surface: #131c2b;
+      --surface-2: #182338;
+      --ink: #e7e3d8;
+      --ink-muted: #9aa5b4;
+      --ink-faint: #6d7889;
+      --line: rgba(231, 227, 216, 0.14);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+
+      --a: #e0a94e; --a-ink: #17202b;
+      --b: #4fb3a6; --b-ink: #0d1420;
+      --c: #e17361; --c-ink: #1d0f0c;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0d1420;
+    --surface: #131c2b;
+    --surface-2: #182338;
+    --ink: #e7e3d8;
+    --ink-muted: #9aa5b4;
+    --ink-faint: #6d7889;
+    --line: rgba(231, 227, 216, 0.14);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+
+    --a: #e0a94e; --a-ink: #17202b;
+    --b: #4fb3a6; --b-ink: #0d1420;
+    --c: #e17361; --c-ink: #1d0f0c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  header.intro { margin-bottom: 2.25rem; max-width: 68ch; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 0.6rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 5vw, 2.75rem);
+    line-height: 1.08;
+    margin: 0 0 0.65rem;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 1.03rem;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin: 0 0 0.5rem;
+  }
+
+  .lede cite { font-style: normal; color: var(--ink); }
+
+  .howto {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    margin: 1rem 0 0;
+    padding: 0.7rem 0.9rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .howto strong { color: var(--ink); }
+
+  /* ---- Plans grid ---- */
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .plan {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--plan-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.4rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  .plan[data-plan="a"] { --plan-color: var(--a); --plan-ink: var(--a-ink); }
+  .plan[data-plan="b"] { --plan-color: var(--b); --plan-ink: var(--b-ink); }
+  .plan[data-plan="c"] { --plan-color: var(--c); --plan-ink: var(--c-ink); }
+
+  .plan-head .plan-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--plan-ink);
+    background: var(--plan-color);
+    border-radius: 999px;
+    padding: 0.26rem 0.65rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .plan-prompt {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin: 0 0 0.75rem;
+  }
+
+  .plan-title {
+    width: 100%;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px dashed var(--line);
+    padding: 0.1rem 0 0.4rem;
+    outline: none;
+  }
+  .plan-title::placeholder { color: var(--ink-faint); font-weight: 500; }
+  .plan-title:focus { border-bottom-color: var(--plan-color); }
+
+  /* ---- Timeline ---- */
+  .timeline-label, .dashboard-label, .reflect-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 0.7rem;
+  }
+
+  .timeline { display: flex; flex-direction: column; }
+
+  .year-row {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    column-gap: 0.7rem;
+  }
+
+  .year-rail {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .year-rail .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--plan-color);
+    margin-top: 0.55rem;
+    flex: 0 0 auto;
+    z-index: 1;
+  }
+  .year-rail .stem {
+    position: absolute;
+    top: 0.9rem;
+    bottom: -0.3rem;
+    left: 50%;
+    width: 2px;
+    background: var(--line);
+    transform: translateX(-50%);
+  }
+  .year-row:last-child .year-rail .stem { display: none; }
+
+  .year-content { padding-bottom: 0.75rem; }
+  .year-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.15rem;
+  }
+
+  .year-content textarea {
+    width: 100%;
+    resize: none;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding: 0;
+    outline: none;
+    min-height: 2.5em;
+  }
+  .year-content textarea::placeholder { color: var(--ink-faint); }
+
+  /* ---- Dashboard ---- */
+  .dashboard { display: flex; flex-direction: column; gap: 0.85rem; }
+
+  .gauge-row { display: flex; flex-direction: column; gap: 0.3rem; }
+  .gauge-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.85rem;
+  }
+  .gauge-top .gname { color: var(--ink); font-weight: 500; }
+  .gauge-top .gval {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--plan-color);
+    font-weight: 600;
+  }
+  .gauge-hint { font-size: 0.76rem; color: var(--ink-faint); margin: -0.1rem 0 0.1rem; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--plan-color) 0%, var(--plan-color) var(--fill, 50%), var(--surface-2) var(--fill, 50%), var(--surface-2) 100%);
+    border: 1px solid var(--line);
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--plan-color);
+    cursor: pointer;
+    margin-top: -1px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--plan-color);
+    cursor: pointer;
+  }
+  input[type="range"]:focus-visible { outline: 2px solid var(--plan-color); outline-offset: 3px; }
+
+  /* ---- Reflection ---- */
+  .reflect textarea {
+    width: 100%;
+    min-height: 4.5em;
+    resize: vertical;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding: 0.65rem 0.75rem;
+    outline: none;
+  }
+  .reflect textarea::placeholder { color: var(--ink-faint); }
+  .reflect textarea:focus { border-color: var(--plan-color); }
+
+  /* ---- Synthesis ---- */
+  .synthesis {
+    margin-top: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.6rem 1.7rem;
+  }
+  .synthesis h2 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+  }
+  .synthesis p.hint {
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+    margin: 0 0 0.9rem;
+    line-height: 1.5;
+  }
+  .synthesis textarea {
+    width: 100%;
+    min-height: 6em;
+    resize: vertical;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    padding: 0.75rem 0.85rem;
+    outline: none;
+  }
+  .synthesis textarea::placeholder { color: var(--ink-faint); }
+  .synthesis textarea:focus { border-color: var(--ink-muted); }
+
+  /* ---- Footer ---- */
+  footer {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .note { font-size: 0.82rem; color: var(--ink-muted); max-width: 42ch; }
+
+  button#reset {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  button#reset:hover { border-color: var(--c); color: var(--c); }
+  button#reset:focus-visible { outline: 2px solid var(--ink-muted); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="intro">
+    <p class="eyebrow">A five-year life &amp; career sketch</p>
+    <h1>Odyssey Plan</h1>
+    <p class="lede">Sketch three plausible five-year versions of your life side by side, then rate each one honestly. The point isn't to pick a winner — it's to see options you didn't know you had. Adapted from the Odyssey Plan exercise in <cite>Designing Your Life</cite> by Bill Burnett &amp; Dave Evans.</p>
+    <p class="howto"><strong>How to use this:</strong> name each plan, sketch what happens year by year, then rate it on the dashboard below. Everything you type is saved automatically in this browser.</p>
+  </header>
+
+  <div class="plans">
+
+    <section class="plan" data-plan="a">
+      <div class="plan-head">
+        <span class="plan-tag">Plan A</span>
+        <p class="plan-prompt">The one you're already on. Where your current path leads if you just keep going.</p>
+        <input type="text" class="plan-title" data-field="a-title" placeholder="Name this plan…" maxlength="60" />
+      </div>
+
+      <div class="timeline">
+        <p class="timeline-label">Five years, roughly</p>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 1</div><textarea data-field="a-y1" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 2</div><textarea data-field="a-y2" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 3</div><textarea data-field="a-y3" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 4</div><textarea data-field="a-y4" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span></div><div class="year-content"><div class="year-num">Year 5</div><textarea data-field="a-y5" placeholder="What happens…" rows="2"></textarea></div></div>
+      </div>
+
+      <div class="dashboard">
+        <p class="dashboard-label">The dashboard</p>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Resonance</span><span class="gval" data-val="a-resonance">5</span></div>
+          <p class="gauge-hint">How much do you like this plan?</p>
+          <input type="range" min="1" max="10" value="5" data-field="a-resonance" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Confidence</span><span class="gval" data-val="a-confidence">5</span></div>
+          <p class="gauge-hint">How sure are you that you could pull it off?</p>
+          <input type="range" min="1" max="10" value="5" data-field="a-confidence" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Coherence</span><span class="gval" data-val="a-coherence">5</span></div>
+          <p class="gauge-hint">Does it fit who you are and where you're at?</p>
+          <input type="range" min="1" max="10" value="5" data-field="a-coherence" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Resources</span><span class="gval" data-val="a-resources">5</span></div>
+          <p class="gauge-hint">Time, money, skills, contacts — do you have what it takes?</p>
+          <input type="range" min="1" max="10" value="5" data-field="a-resources" />
+        </div>
+      </div>
+
+      <div class="reflect">
+        <p class="reflect-label">Notice anything?</p>
+        <textarea data-field="a-notes" placeholder="What does this plan tell you about what you want?"></textarea>
+      </div>
+    </section>
+
+    <section class="plan" data-plan="b">
+      <div class="plan-head">
+        <span class="plan-tag">Plan B</span>
+        <p class="plan-prompt">The one you'd choose instead. What you'd do if Plan A vanished tomorrow — not a backup, a genuinely different direction.</p>
+        <input type="text" class="plan-title" data-field="b-title" placeholder="Name this plan…" maxlength="60" />
+      </div>
+
+      <div class="timeline">
+        <p class="timeline-label">Five years, roughly</p>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 1</div><textarea data-field="b-y1" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 2</div><textarea data-field="b-y2" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 3</div><textarea data-field="b-y3" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 4</div><textarea data-field="b-y4" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span></div><div class="year-content"><div class="year-num">Year 5</div><textarea data-field="b-y5" placeholder="What happens…" rows="2"></textarea></div></div>
+      </div>
+
+      <div class="dashboard">
+        <p class="dashboard-label">The dashboard</p>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Resonance</span><span class="gval" data-val="b-resonance">5</span></div>
+          <p class="gauge-hint">How much do you like this plan?</p>
+          <input type="range" min="1" max="10" value="5" data-field="b-resonance" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Confidence</span><span class="gval" data-val="b-confidence">5</span></div>
+          <p class="gauge-hint">How sure are you that you could pull it off?</p>
+          <input type="range" min="1" max="10" value="5" data-field="b-confidence" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Coherence</span><span class="gval" data-val="b-coherence">5</span></div>
+          <p class="gauge-hint">Does it fit who you are and where you're at?</p>
+          <input type="range" min="1" max="10" value="5" data-field="b-coherence" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Resources</span><span class="gval" data-val="b-resources">5</span></div>
+          <p class="gauge-hint">Time, money, skills, contacts — do you have what it takes?</p>
+          <input type="range" min="1" max="10" value="5" data-field="b-resources" />
+        </div>
+      </div>
+
+      <div class="reflect">
+        <p class="reflect-label">Notice anything?</p>
+        <textarea data-field="b-notes" placeholder="What does this plan tell you about what you want?"></textarea>
+      </div>
+    </section>
+
+    <section class="plan" data-plan="c">
+      <div class="plan-head">
+        <span class="plan-tag">Plan C</span>
+        <p class="plan-prompt">The one no one would judge. What you'd build if money and other people's opinions were no object.</p>
+        <input type="text" class="plan-title" data-field="c-title" placeholder="Name this plan…" maxlength="60" />
+      </div>
+
+      <div class="timeline">
+        <p class="timeline-label">Five years, roughly</p>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 1</div><textarea data-field="c-y1" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 2</div><textarea data-field="c-y2" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 3</div><textarea data-field="c-y3" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span><span class="stem"></span></div><div class="year-content"><div class="year-num">Year 4</div><textarea data-field="c-y4" placeholder="What happens…" rows="2"></textarea></div></div>
+        <div class="year-row"><div class="year-rail"><span class="dot"></span></div><div class="year-content"><div class="year-num">Year 5</div><textarea data-field="c-y5" placeholder="What happens…" rows="2"></textarea></div></div>
+      </div>
+
+      <div class="dashboard">
+        <p class="dashboard-label">The dashboard</p>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Resonance</span><span class="gval" data-val="c-resonance">5</span></div>
+          <p class="gauge-hint">How much do you like this plan?</p>
+          <input type="range" min="1" max="10" value="5" data-field="c-resonance" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Confidence</span><span class="gval" data-val="c-confidence">5</span></div>
+          <p class="gauge-hint">How sure are you that you could pull it off?</p>
+          <input type="range" min="1" max="10" value="5" data-field="c-confidence" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Coherence</span><span class="gval" data-val="c-coherence">5</span></div>
+          <p class="gauge-hint">Does it fit who you are and where you're at?</p>
+          <input type="range" min="1" max="10" value="5" data-field="c-coherence" />
+        </div>
+        <div class="gauge-row">
+          <div class="gauge-top"><span class="gname">Resources</span><span class="gval" data-val="c-resources">5</span></div>
+          <p class="gauge-hint">Time, money, skills, contacts — do you have what it takes?</p>
+          <input type="range" min="1" max="10" value="5" data-field="c-resources" />
+        </div>
+      </div>
+
+      <div class="reflect">
+        <p class="reflect-label">Notice anything?</p>
+        <textarea data-field="c-notes" placeholder="What does this plan tell you about what you want?"></textarea>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="synthesis">
+    <h2>What I'm noticing across all three</h2>
+    <p class="hint">Look at all three plans together. A common thread, a recurring itch, a resource you keep leaning on — write down whatever stands out.</p>
+    <textarea data-field="synthesis" placeholder="Patterns, surprises, a plan you want to steal ideas from…"></textarea>
+  </section>
+
+  <footer>
+    <p class="note">Everything here is stored only in this browser (localStorage) — nothing is uploaded anywhere.</p>
+    <button id="reset" type="button">Reset everything</button>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = "odyssey-plan";
+
+  var textInputs = Array.prototype.slice.call(document.querySelectorAll("input[data-field], textarea[data-field]"));
+  var sliders = Array.prototype.slice.call(document.querySelectorAll("input[type='range'][data-field]"));
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveState() {
+    var state = {};
+    textInputs.forEach(function (el) { state[el.dataset.field] = el.value; });
+    sliders.forEach(function (el) { state[el.dataset.field] = el.value; });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      /* storage unavailable — inputs still work, just won't persist */
+    }
+  }
+
+  function updateSliderVisual(el) {
+    var min = Number(el.min), max = Number(el.max), val = Number(el.value);
+    var pct = ((val - min) / (max - min)) * 100;
+    el.style.setProperty("--fill", pct + "%");
+    var out = document.querySelector('[data-val="' + el.dataset.field + '"]');
+    if (out) out.textContent = val;
+  }
+
+  function applyState(state) {
+    textInputs.forEach(function (el) {
+      if (state[el.dataset.field] !== undefined) el.value = state[el.dataset.field];
+    });
+    sliders.forEach(function (el) {
+      if (state[el.dataset.field] !== undefined) el.value = state[el.dataset.field];
+      updateSliderVisual(el);
+    });
+  }
+
+  textInputs.forEach(function (el) {
+    el.addEventListener("input", saveState);
+  });
+
+  sliders.forEach(function (el) {
+    el.addEventListener("input", function () {
+      updateSliderVisual(el);
+      saveState();
+    });
+  });
+
+  document.getElementById("reset").addEventListener("click", function () {
+    if (!confirm("Clear all three plans and start over? This can't be undone.")) return;
+    textInputs.forEach(function (el) { el.value = ""; });
+    sliders.forEach(function (el) { el.value = 5; updateSliderVisual(el); });
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  });
+
+  applyState(loadState());
+})();
+</script>
+</body>
+</html>
