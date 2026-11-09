@@ -16,7 +16,7 @@ import { Leaf } from "../components/Leaf";
 import { Pip } from "../components/Pip";
 import { ThoughtBubble } from "../components/ThoughtBubble";
 import { Zzz } from "../components/Zzz";
-import { COLORS, HEIGHT, LEAF_COLORS, WIDTH, sec } from "../theme";
+import { COLORS, FONT_FAMILY, HEIGHT, LEAF_COLORS, WIDTH, sec } from "../theme";
 
 /* ------------------------------------------------------------------ */
 /* Timeline (seconds). Change these to re-time the whole scene.        */
@@ -171,6 +171,30 @@ const NestLeaves: React.FC<{ layer: "back" | "front" }> = ({ layer }) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Small labelled tag (for "4" and "300")                              */
+/* ------------------------------------------------------------------ */
+const Tag: React.FC<{ x: number; y: number; big: string; small: string; opacity: number }> = ({
+  x,
+  y,
+  big,
+  small,
+  opacity,
+}) => {
+  if (opacity <= 0) return null;
+  return (
+    <g transform={`translate(${x} ${y})`} opacity={opacity}>
+      <rect x={-105} y={-62} width={210} height={124} rx={40} fill={COLORS.cream} stroke={COLORS.golden} strokeWidth={6} />
+      <text textAnchor="middle" y={4} fontFamily={FONT_FAMILY} fontSize={64} fill={COLORS.burntOrange}>
+        {big}
+      </text>
+      <text textAnchor="middle" y={44} fontFamily={FONT_FAMILY} fontSize={30} fill={COLORS.brown}>
+        {small}
+      </text>
+    </g>
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /* Thought bubble contents                                             */
 /* ------------------------------------------------------------------ */
 const Sparkle: React.FC<{ x: number; y: number; s: number; opacity?: number }> = ({ x, y, s, opacity = 1 }) => (
@@ -316,6 +340,10 @@ export const Scene1: React.FC = () => {
 
 
 
+  const keptTag = fadeInOut(f, S("fourLeaves")[0] + 30, scoopS, 12);
+  const rejectedTag = fadeInOut(f, S("rejected")[0] + 6, scoopS, 12);
+  const rejectedCount = Math.round(ease(f, [S("rejected")[0] + 6, S("rejected")[1] - 12], [0, 300], (t) => 1 - Math.pow(1 - t, 3)));
+
   const smallBubble = ease(f, [S("perfectNest")[0] + 6, S("perfectNest")[0] + 30], [0, 1]) * ease(f, [S("perfectNest")[1] - 14, S("perfectNest")[1]], [1, 0]);
   const bigBubble = ease(f, [S("bigThought")[0] + 6, S("bigThought")[0] + 40], [0, 1]) * ease(f, [S("justThere")[1] - 14, S("justThere")[1]], [1, 0]);
   const ideaOpacity = fadeInOut(f, S("bigThought")[0], S("bigThought")[1] + 6, 10);
@@ -393,6 +421,9 @@ export const Scene1: React.FC = () => {
 
         <NestLeaves layer="front" />
 
+        <Tag x={890} y={1560} big="4" small="good leaves" opacity={keptTag} />
+        <Tag x={200} y={1530} big={`${rejectedCount}`} small="rejected" opacity={rejectedTag} />
+
         {/* hearts rising from the cosy nest */}
         {[0, 1, 2].map((k) => {
           const start = S("cosiest")[0] + sec(1) + k * 25;
@@ -432,7 +463,69 @@ export const Scene1: React.FC = () => {
 
       <Frost amount={frostAmount} />
 
+      <BreathCount start={inS} end={inE} />
+      <BreathCount start={outS} end={outE} />
+
       <AbsoluteFill style={{ backgroundColor: COLORS.cream, opacity: endFade }} />
     </AbsoluteFill>
+  );
+};
+
+/** Three numbered circles that fill one per second: 1… 2… 3… */
+const BreathCount: React.FC<{ start: number; end: number }> = ({ start, end }) => {
+  const frame = useCurrentFrame();
+  if (frame < start - 8 || frame > end + 8) return null;
+  const opacity = fadeInOut(frame, start - 8, end + 8, 8);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: 300,
+        left: 0,
+        right: 0,
+        display: "flex",
+        justifyContent: "center",
+        gap: 44,
+        opacity,
+      }}
+    >
+      {[0, 1, 2].map((k) => {
+        const on = ease(frame, [start + sec(k), start + sec(k) + 12], [0, 1]);
+        return (
+          <div
+            key={k}
+            style={{
+              width: 110,
+              height: 110,
+              borderRadius: 55,
+              border: `8px solid ${COLORS.golden}`,
+              background: COLORS.cream,
+              boxSizing: "border-box",
+              boxShadow: `0 10px 30px ${COLORS.brown}22`,
+              transform: `scale(${0.8 + on * 0.2})`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: FONT_FAMILY,
+              fontSize: 64,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* golden fill that grows in smoothly */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: 55,
+                background: COLORS.golden,
+                opacity: on,
+              }}
+            />
+            <span style={{ position: "relative", color: on > 0.5 ? COLORS.cream : COLORS.golden }}>{k + 1}</span>
+          </div>
+        );
+      })}
+    </div>
   );
 };
