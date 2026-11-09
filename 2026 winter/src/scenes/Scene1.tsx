@@ -10,14 +10,13 @@ import {
 } from "remotion";
 import { ease, fadeInOut } from "../anim";
 import { Background } from "../components/Background";
-import { Caption } from "../components/Caption";
 import { FallingLeaves } from "../components/FallingLeaves";
 import { Frost } from "../components/Frost";
 import { Leaf } from "../components/Leaf";
 import { Pip } from "../components/Pip";
 import { ThoughtBubble } from "../components/ThoughtBubble";
 import { Zzz } from "../components/Zzz";
-import { COLORS, FONT_FAMILY, HEIGHT, LEAF_COLORS, WIDTH, sec } from "../theme";
+import { COLORS, HEIGHT, LEAF_COLORS, WIDTH, sec } from "../theme";
 
 /* ------------------------------------------------------------------ */
 /* Timeline (seconds). Change these to re-time the whole scene.        */
@@ -38,31 +37,12 @@ export const T = {
   breatheIntro: [45, 48],
   breatheIn: [48, 51], // 3 seconds in
   breatheOut: [51, 54], // 3 seconds out
-  goodnight: [54, 58],
 } as const;
 
-export const SCENE1_DURATION = sec(58);
+/** Ends with a 1-second gentle fade after the out-breath. */
+export const SCENE1_DURATION = sec(55);
 
 const S = (key: keyof typeof T) => [sec(T[key][0]), sec(T[key][1])] as const;
-
-const CAPTIONS: { key: keyof typeof T; text: string }[] = [
-  { key: "thisIsPip", text: "This is *Pip*." },
-  { key: "hedgehog", text: "She's a hedgehog." },
-  { key: "perfectNest", text: "And she wanted the *perfect nest* for winter." },
-  { key: "allAsleep", text: "By the end of the week, every hedgehog was asleep." },
-  { key: "fourLeaves", text: "Pip had *four* leaves." },
-  { key: "rejected", text: "She'd rejected *three hundred*." },
-  { key: "frost", text: "Then the frost came," },
-  { key: "bigThought", text: "and Pip had a *big thought* for a small hedgehog." },
-  { key: "notPerfect", text: "Maybe it doesn't need to be perfect." },
-  { key: "justThere", text: "Maybe it just needs to *be there*." },
-  { key: "scoop", text: "She scooped up any old leaves, curled into a ball…" },
-  { key: "cosiest", text: "…and it was the *cosiest nest* she'd ever had." },
-  { key: "breatheIntro", text: "Let's breathe with Pip." },
-  { key: "breatheIn", text: "Breathe in… *stretch tall*" },
-  { key: "breatheOut", text: "Breathe out… *curl small*" },
-  { key: "goodnight", text: "Snug as can be. *Goodnight, Pip.*" },
-];
 
 /* Pip's spot on the ground */
 const PIP_X = 540;
@@ -187,30 +167,6 @@ const NestLeaves: React.FC<{ layer: "back" | "front" }> = ({ layer }) => {
         );
       })}
     </>
-  );
-};
-
-/* ------------------------------------------------------------------ */
-/* Small labelled tag (for "4" and "300")                              */
-/* ------------------------------------------------------------------ */
-const Tag: React.FC<{ x: number; y: number; big: string; small: string; opacity: number }> = ({
-  x,
-  y,
-  big,
-  small,
-  opacity,
-}) => {
-  if (opacity <= 0) return null;
-  return (
-    <g transform={`translate(${x} ${y})`} opacity={opacity}>
-      <rect x={-105} y={-62} width={210} height={124} rx={40} fill={COLORS.cream} stroke={COLORS.golden} strokeWidth={6} />
-      <text textAnchor="middle" y={4} fontFamily={FONT_FAMILY} fontSize={64} fill={COLORS.burntOrange}>
-        {big}
-      </text>
-      <text textAnchor="middle" y={44} fontFamily={FONT_FAMILY} fontSize={30} fill={COLORS.brown}>
-        {small}
-      </text>
-    </g>
   );
 };
 
@@ -356,9 +312,9 @@ export const Scene1: React.FC = () => {
   const sleepersIn = ease(f, [S("allAsleep")[0], S("allAsleep")[0] + sec(0.8)], [0, 1]);
   const sleepersCurl = ease(f, [S("allAsleep")[0] + sec(0.8), S("allAsleep")[0] + sec(2.6)], [0, 1]);
 
-  const keptTag = fadeInOut(f, S("fourLeaves")[0] + 30, scoopS, 12);
-  const rejectedTag = fadeInOut(f, S("rejected")[0] + 6, scoopS, 12);
-  const rejectedCount = Math.round(ease(f, [S("rejected")[0] + 6, S("rejected")[1] - 12], [0, 300], (t) => 1 - Math.pow(1 - t, 3)));
+
+
+
 
   const smallBubble = ease(f, [S("perfectNest")[0] + 6, S("perfectNest")[0] + 30], [0, 1]) * ease(f, [S("perfectNest")[1] - 14, S("perfectNest")[1]], [1, 0]);
   const bigBubble = ease(f, [S("bigThought")[0] + 6, S("bigThought")[0] + 40], [0, 1]) * ease(f, [S("justThere")[1] - 14, S("justThere")[1]], [1, 0]);
@@ -370,8 +326,8 @@ export const Scene1: React.FC = () => {
   const glow = ease(f, [scoopE - sec(0.5), S("cosiest")[0] + sec(2)], [0, 1]);
   const ringOn = fadeInOut(f, inS - 10, outE + 10, 10);
   const ringR = f < outS ? ease(f, [inS, inE], [190, 330]) : ease(f, [outS, outE], [330, 190]);
-  const goodnightZ = ease(f, [S("goodnight")[0] + 10, S("goodnight")[0] + 40], [0, 1]);
-  const endFade = ease(f, [SCENE1_DURATION - sec(1.2), SCENE1_DURATION], [0, 1]);
+
+  const endFade = ease(f, [outE, SCENE1_DURATION], [0, 1]);
 
   const pipX = walkIn + shiverX;
   const pipY = PIP_Y + hopY;
@@ -437,9 +393,6 @@ export const Scene1: React.FC = () => {
 
         <NestLeaves layer="front" />
 
-        <Tag x={890} y={1560} big="4" small="good leaves" opacity={keptTag} />
-        <Tag x={200} y={1530} big={`${rejectedCount}`} small="rejected" opacity={rejectedTag} />
-
         {/* hearts rising from the cosy nest */}
         {[0, 1, 2].map((k) => {
           const start = S("cosiest")[0] + sec(1) + k * 25;
@@ -455,8 +408,6 @@ export const Scene1: React.FC = () => {
             />
           );
         })}
-
-        <Zzz x={PIP_X + 120} y={PIP_Y - 330} size={52} opacity={goodnightZ} />
 
         {/* the small "perfect nest" daydream */}
         <ThoughtBubble x={800} y={980} toX={680} toY={1300} radius={160} progress={smallBubble}>
@@ -481,54 +432,7 @@ export const Scene1: React.FC = () => {
 
       <Frost amount={frostAmount} />
 
-      {CAPTIONS.map(({ key, text }) => {
-        const [start, end] = S(key);
-        const isBreath = key === "breatheIn" || key === "breatheOut";
-        return (
-          <Caption key={key} text={text} start={start} end={end} fontSize={isBreath ? 96 : 84}>
-            {isBreath && <BreathCount start={start} />}
-          </Caption>
-        );
-      })}
-
       <AbsoluteFill style={{ backgroundColor: COLORS.cream, opacity: endFade }} />
     </AbsoluteFill>
-  );
-};
-
-/** Three dots that fill one per second: 1… 2… 3… */
-const BreathCount: React.FC<{ start: number }> = ({ start }) => {
-  const frame = useCurrentFrame();
-  return (
-    <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 18 }}>
-      {[0, 1, 2].map((k) => {
-        const on = ease(frame, [start + sec(k), start + sec(k) + 12], [0, 1]);
-        return (
-          <div
-            key={k}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              border: `5px solid ${COLORS.golden}`,
-              background: COLORS.golden,
-              backgroundClip: "content-box",
-              boxSizing: "border-box",
-              padding: 0,
-              opacity: 0.35 + on * 0.65,
-              transform: `scale(${0.8 + on * 0.2})`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: FONT_FAMILY,
-              fontSize: 28,
-              color: COLORS.cream,
-            }}
-          >
-            {k + 1}
-          </div>
-        );
-      })}
-    </div>
   );
 };
