@@ -44,3 +44,10 @@ npx remotion render Scene1 out/scene1.mp4 --browser-executable=/path/to/chromium
 
 To re-time it (for example to match a voiceover), edit the `T` table at the top of
 `src/scenes/Scene1.tsx`. Everything else follows it.
+
+## Style guide
+
+The full house style (colours, font, easing, timings, shapes, Pip's character sheet) is in
+[`STYLE_GUIDE.md`](STYLE_GUIDE.md), with reference stills in [`style-guide/`](style-guide/).
+Claude Code picks it up automatically through the project skill `/yt-26winter-animation`
+(`.claude/skills/yt-26winter-animation/SKILL.md`).
