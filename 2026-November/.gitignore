@@ -1,0 +1,5 @@
+node_modules
+out
+.DS_Store
+# your voiceover stays local; copy it here as public/voiceover.m4a
+public/voiceover.m4a
