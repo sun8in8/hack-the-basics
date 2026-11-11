@@ -387,10 +387,29 @@ The `T` table in `src/scenes/Scene1.tsx` (in seconds) drives everything.
 | end | 54–55 | 1s fade to cream |
 
 **Breathing exercise standard:** **3s in and stretch tall, 3s out and curl small**, one breath.
+A script may add a **hold**: then it is **3s in, 3s hold, 3s out**, with a separate set of 1‑2‑3
+circles for each part, and everything stays still during the hold (scene 2).
 The in-breath uses `stretch`. The out-breath uses `curl` (eyes close as she curls). The breath ring
 and 1‑2‑3 circles always come with it.
 
 ---
+
+## 8b. Scene 2: the oak (`Scene2.tsx`, `Oak.tsx`, `Roots.tsx`)
+
+- **The oak** stands at (540, 1340), with a deep-red (`#A0522D`) trunk and branches and a crown of
+  rounded blobs in orange, golden and light golden with leaves on top. Her face sits on the trunk:
+  brown-dark eyes with soft brows, laugh lines, orange cheeks at 45% and a smile. Her eyes close
+  (curved lines) for calm moments and for the breathing.
+- **Soil cut-away:** a deep-red topsoil band from y ≈ 1300, then brown soil from y ≈ 1350, with a
+  few brown-dark pebbles at 35%. The roots are deep-red round strokes, 10–38px wide.
+- **Roots lighting up:** a golden line (40% of the root's width) plus a blurred light-golden halo
+  travel along each root from the trunk outwards (`pathLength` 1 with a dash offset) over about
+  4.6s, with a soft light-golden glow in the soil. "Alive" adds twinkling light-golden sparkles
+  and a slow pulse.
+- **Letting go:** each leaf wiggles for 14 frames, then falls over 3.2–4.4s with a sway and lands
+  flat on the ground. The crown shrinks to 55% and fades only at the very end.
+- **Breathing with a tree:** the ring is centred where the trunk meets the roots. On the in-breath
+  warm golden light (50%) fills the trunk from the ground up and she grows 3% taller.
 
 ## 9. Building a new scene in this style
 
