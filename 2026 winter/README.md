@@ -24,7 +24,7 @@ circles.
 
 | Beat | Time (s) | Picture |
 | --- | --- | --- |
-| intro | 0–4.5 | Oak in full autumn crown, eyes closed, leaves falling behind her |
+| intro | 0–4.5 | Oak in full autumn crown, eyes closed. Only her own leaves ever fall (no leaves from the sky) |
 | tellYou | 6–8.5 | Her eyes open |
 | choosing | 9.5–14 | Ten leaves let go one at a time and settle at her feet |
 | costTooMuch | 15–18 | Pale frost comes in, her smile dips |
@@ -32,7 +32,7 @@ circles.
 | roots | 24–28.5 | Golden orbs travel down from the branch tips through the trunk, and the roots light up gently from the trunk outwards |
 | bare / alive | 29.5–36 | Bare branches. The roots glow warmer, with twinkling sparkles |
 | breathing | 37–49 | Eyes close. **3s in** (warm light rises up the trunk, she grows a touch taller, ring 190→330), **3s hold**, **3s out** (light sinks back into the roots, ring 330→190). 1‑2‑3 circles for each part |
-| question | 51–55.5 | One last golden leaf drifts down to her roots, which pulse warm |
+| question | 51–55.5 | The last golden leaf, hanging on her right branch tip, lets go and drifts down to her roots, which pulse warm |
 | end | 58–59 | Fade to cream |
 
 The times are estimates. To sync to the voiceover, copy it to `public/oak-voiceover.m4a`, set

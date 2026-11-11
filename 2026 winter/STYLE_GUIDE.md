@@ -406,6 +406,9 @@ and 1‑2‑3 circles always come with it.
   travel along each root from the trunk outwards (`pathLength` 1 with a dash offset) over about
   4.6s, with a soft light-golden glow in the soil. "Alive" adds twinkling light-golden sparkles
   and a slow pulse.
+- **No background falling leaves in this scene** (an exception to hard rule 5, on purpose): the only
+  falling leaves are the oak's own. One golden leaf hangs on her right branch tip and is the last to
+  fall, on the closing question.
 - **Letting go:** each leaf wiggles for 14 frames, then falls over 3.2–4.4s with a sway and lands
   flat on the ground. The crown shrinks to 55% and fades only at the very end.
 - **Breathing with a tree:** the ring is centred where the trunk meets the roots. On the in-breath

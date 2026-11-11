@@ -10,7 +10,6 @@ import {
 } from "remotion";
 import { ease, fadeInOut } from "../anim";
 import { BreathCount } from "../components/BreathCount";
-import { FallingLeaves } from "../components/FallingLeaves";
 import { Frost } from "../components/Frost";
 import { Leaf } from "../components/Leaf";
 import { BRANCH_TIPS, CROWN, OAK_BASE_Y, OAK_X, Oak } from "../components/Oak";
@@ -305,7 +304,12 @@ export const Scene2: React.FC<{ withAudio?: boolean }> = ({ withAudio = false })
     ease(f, [qE + sec(0.6), qE + sec(2)], [0, 0.2]);
 
   const endFade = ease(f, [endS, endE], [0, 1]);
-  const lastLeafX = 700 - 140 * lastLeafT + Math.sin(f * 0.035) * 60 * Math.sin(Math.PI * lastLeafT);
+  // it has hung on her right branch tip all along, and lets go on the question
+  const lastFrom = treePoint(840, 632, f < qS + sec(0.3) ? f : qS + sec(0.3));
+  const lastLand = { x: 640, y: groundY(640) + 6 };
+  const lastLeafX =
+    lastFrom.x + (lastLand.x - lastFrom.x) * lastLeafT + Math.sin(f * 0.035) * 60 * Math.sin(Math.PI * lastLeafT);
+  const lastLeafY = lastFrom.y + (lastLand.y - lastFrom.y) * lastLeafT;
 
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.cream }}>
@@ -314,8 +318,6 @@ export const Scene2: React.FC<{ withAudio?: boolean }> = ({ withAudio = false })
         <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ position: "absolute", inset: 0 }}>
           <Sky dusk={dusk} />
         </svg>
-
-        <FallingLeaves count={14} seed="oak-bg" opacity={0.8} />
 
         <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ position: "absolute", inset: 0 }}>
           <Soil />
@@ -370,16 +372,13 @@ export const Scene2: React.FC<{ withAudio?: boolean }> = ({ withAudio = false })
           )}
 
           {/* one last leaf drifts down: something you could put down */}
-          {f >= qS && (
-            <Leaf
-              x={lastLeafX}
-              y={180 + (groundY(560) + 6 - 180) * lastLeafT}
-              rotate={20 + 70 * lastLeafT + Math.sin(f * 0.035) * 30 * Math.sin(Math.PI * lastLeafT)}
-              size={78}
-              color={COLORS.golden}
-              opacity={ease(f, [qS, qS + 12], [0, 1])}
-            />
-          )}
+          <Leaf
+            x={lastLeafX}
+            y={lastLeafY}
+            rotate={20 + swayDeg(f) + 70 * lastLeafT + Math.sin(f * 0.035) * 30 * Math.sin(Math.PI * lastLeafT)}
+            size={70}
+            color={COLORS.golden}
+          />
         </svg>
 
         <Frost amount={frost} />
