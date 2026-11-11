@@ -423,3 +423,19 @@ commands with `env -u NO_PROXY -u no_proxy npm_config_noproxy=localhost`.
 - [ ] Falling leaves present
 - [ ] Pip uses the `Pip` component with the poses in §6.5
 - [ ] All randomness from `random(seed)`
+
+---
+
+## 10. Approved variations (from later scenes)
+
+### Lighthouse keeper Short (`2026-November-lighthouse/`, November 2026)
+Su asked for these on purpose for this Short. The rest of the guide still applies.
+
+| What | Standard rule | This Short |
+| --- | --- | --- |
+| Main character | Pip only, never redraw her | A new human character, the **keeper** (`src/components/Keeper.tsx`): flat, rounded, facing us. Burnt-orange knitted coat with golden buttons, golden scarf with burnt-orange stripes, `#553319` hair in a bun, cream face, the same eye, cheek and mouth shapes as Pip, soft brown trousers and `#553319` boots. Pose with `breath`, `eyesClosed`, `smile`, `tilt` and the world-space hand positions `leftHand` / `rightHand`. |
+| Darkness | "Never dark: the darkest moment is still orange-gold" | An indoor **dim room**: a `#553319` veil at 0.55 opacity, with soft radial holes cut out where light falls (window, match, candle, lantern). It lifts to 0.42 when the candle is lit and 0.28 when the lantern is lit. Still only palette colours, and every change is eased over at least 0.5s. |
+| Falling leaves | Always in the background | Indoors they fall **outside the round window**. Outdoors (the sea scenes) they fall as normal. |
+| On-screen text | Counters and breath numbers | A `1 match` tag (the standard counter tag) and the 1‑2‑3 circles. |
+| New props | — | Flame (teardrop, golden with a golden-light core and a gentle flicker), candle, lantern, matchbox, match, lighthouse, sailing boat and a soft golden-light beam. All are in `src/components/Props.tsx` and `Seascape.tsx`. |
+| Shake | Nothing shakes hard (3px shiver) | The matchbox shake is ±14px and ±9° at a slow rate, eased in and out over 12 frames, with golden "rattle" arcs in place of sound. |

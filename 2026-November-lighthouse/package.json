@@ -1,0 +1,23 @@
+{
+  "name": "lighthouse-keeper-short",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The lighthouse keeper — vertical YouTube Short (1080x1920, 30fps) made with Remotion",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render Lighthouse out/lighthouse.mp4",
+    "still": "remotion still Lighthouse out/still.png --frame=600",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/patrick-hand": "5.3.0",
+    "@remotion/cli": "4.0.542",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.542"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "typescript": "5.9.3"
+  }
+}
