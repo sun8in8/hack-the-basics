@@ -2,6 +2,9 @@ import React from "react";
 import { COLORS } from "../theme";
 import { Eye, Smile } from "./Face";
 
+/** One-off colour Su asked for: a soft sage green for the nurse's bag. */
+const BAG_GREEN = "#7D8B5C";
+
 /**
  * The nurse, facing us, head tilted to rest against the window on her right (our left).
  * Origin = centre of the head before tilting. `rest` 0..1 is a slow, sleepy breath.
@@ -14,16 +17,17 @@ export const NurseResting: React.FC<{ rest: number; tilt?: number }> = ({ rest, 
     {/* arms folded on the lap, bag */}
     <path d="M -130 230 C -150 360 -120 420 -20 430" stroke={COLORS.brown} strokeWidth={70} strokeLinecap="round" fill="none" />
     <path d="M 130 230 C 150 360 120 420 20 430" stroke={COLORS.brown} strokeWidth={70} strokeLinecap="round" fill="none" />
-    <rect x={-110} y={440} width={220} height={140} rx={46} fill={COLORS.cream} />
-    <path d="M -60 444 Q 0 380 60 444" stroke={COLORS.creamShade} strokeWidth={14} strokeLinecap="round" fill="none" />
+    <rect x={-110} y={440} width={220} height={140} rx={46} fill={BAG_GREEN} />
+    <path d="M -60 444 Q 0 380 60 444" stroke={BAG_GREEN} strokeWidth={14} strokeLinecap="round" fill="none" />
     <circle cx={-20} cy={432} r={28} fill={COLORS.creamShade} />
     <circle cx={22} cy={432} r={28} fill={COLORS.creamShade} />
     {/* head, tilted onto the glass */}
     <g transform={`rotate(${tilt} 0 100)`}>
       <rect x={-26} y={50} width={52} height={56} rx={20} fill={COLORS.creamShade} />
-      <ellipse cx={0} cy={-8} rx={96} ry={96} fill={COLORS.brownDark} />
-      <circle cx={-92} cy={-60} r={40} fill={COLORS.brownDark} />
-      <rect x={-78} y={-48} width={26} height={22} rx={10} fill={COLORS.golden} transform="rotate(-30 -65 -37)" />
+      {/* medium-length hair: a cap over the head and two locks to the shoulders */}
+      <ellipse cx={0} cy={-4} rx={96} ry={94} fill={COLORS.brownDark} />
+      <path d="M -70 -10 C -104 20 -108 90 -104 136 C -102 158 -74 162 -64 144 C -58 110 -60 70 -40 30 Z" fill={COLORS.brownDark} />
+      <path d="M 70 -10 C 104 20 108 90 104 136 C 102 158 74 162 64 144 C 58 110 60 70 40 30 Z" fill={COLORS.brownDark} />
       <circle cx={0} cy={6} r={86} fill={COLORS.creamShade} />
       <path d="M -88 -6 C -92 -78 -30 -104 10 -100 C 60 -96 94 -66 90 -10 C 60 -50 20 -56 -10 -48 C -40 -40 -70 -28 -88 -6 Z" fill={COLORS.brownDark} />
       <Eye x={-32} y={10} closed={1} />

@@ -30,17 +30,21 @@ export const Bus: React.FC<{ roll: number; id: string }> = ({ roll, id }) => {
         <g key={i}>
           <rect x={winX(i)} y={-360} width={130} height={150} rx={32} fill={COLORS.goldenLight} />
           {i === 1 && (
-            <g>
-              <path d={`M ${winX(i) + 30} -210 C ${winX(i) + 30} -255 ${winX(i) + 100} -255 ${winX(i) + 100} -210 Z`} fill={COLORS.brown} />
-              <circle cx={winX(i) + 62} cy={-270} r={28} fill={COLORS.deepRed} />
-              <path d={`M ${winX(i) + 40} -268 C ${winX(i) + 40} -310 ${winX(i) + 90} -310 ${winX(i) + 92} -262 L ${winX(i) + 94} -238 C ${winX(i) + 84} -232 ${winX(i) + 78} -240 ${winX(i) + 76} -262 Z`} fill={COLORS.brownDark} />
+            <g transform={`translate(${winX(i) + 65} -210)`}>
+              {/* the lady: full, shoulder-length hair */}
+              <path d="M -44 0 C -52 -50 -50 -102 0 -104 C 50 -102 52 -50 44 0 Z" fill={COLORS.brownDark} />
+              <path d="M -38 0 C -38 -36 38 -36 38 0 Z" fill={COLORS.brown} />
+              <circle cx={0} cy={-62} r={25} fill={COLORS.deepRed} />
+              <path d="M -30 -60 C -34 -98 34 -98 30 -60 C 14 -78 -14 -78 -30 -60 Z" fill={COLORS.brownDark} />
             </g>
           )}
           {i === 3 && (
-            <g transform={`rotate(-16 ${winX(i) + 70} -222)`}>
-              <path d={`M ${winX(i) + 34} -210 C ${winX(i) + 34} -255 ${winX(i) + 104} -255 ${winX(i) + 104} -210 Z`} fill={COLORS.deepRed} />
-              <circle cx={winX(i) + 66} cy={-270} r={27} fill={COLORS.deepRed} />
-              <circle cx={winX(i) + 92} cy={-276} r={13} fill={COLORS.brownDark} />
+            <g transform={`translate(${winX(i) + 65} -210)`}>
+              {/* a passenger sitting up, hair in a bun */}
+              <path d="M -38 0 C -38 -36 38 -36 38 0 Z" fill={COLORS.brown} />
+              <circle cx={0} cy={-62} r={25} fill={COLORS.deepRed} />
+              <path d="M -26 -62 C -28 -94 28 -94 26 -62 C 12 -76 -12 -76 -26 -62 Z" fill={COLORS.brownDark} />
+              <circle cx={0} cy={-98} r={15} fill={COLORS.brownDark} />
             </g>
           )}
         </g>
