@@ -14,6 +14,13 @@ export const COLORS = {
 } as const;
 
 /** Patrick Hand is used only for the breath count numbers (and approved one-off words). */
+/**
+ * One-off, approved by Su for this video: the main lady's green coat.
+ * A muted olive so it sits with the warm autumn palette.
+ */
+export const COAT_GREEN = "#6F7A3A";
+export const COAT_GREEN_DARK = "#555E2B";
+
 export const FONT_FAMILY = "'Patrick Hand', 'Comic Sans MS', cursive";
 
 export const FPS = 30;

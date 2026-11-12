@@ -1,5 +1,6 @@
 import React from "react";
-import { COLORS } from "../theme";
+import { COAT_GREEN, COAT_GREEN_DARK, COLORS } from "../theme";
+import { Face } from "./Face";
 
 type Props = {
   x: number;
@@ -14,6 +15,9 @@ type Props = {
   blanket?: number;
   /** 0 = blanket flaps open, 1 = flaps crossed in a hug */
   wrap?: number;
+  frame?: number;
+  /** 0 = open eyes, 1 = softly closed */
+  eyesClosed?: number;
 };
 
 const Stripes: React.FC<{ x: number; y: number; w: number; h: number }> = ({ x, y, w, h }) => (
@@ -25,10 +29,11 @@ const Stripes: React.FC<{ x: number; y: number; w: number; h: number }> = ({ x, 
 );
 
 /**
- * "You": a plain adult figure with no face, no hair bun. Feet at (x, y).
+ * "You": a young lady with dark, medium-length hair (no bun) and a warm smile.
+ * Green coat (Su's request for this video), brown scarf. Feet at (x, y).
  * Local box: about 720 tall, feet at 0.
  */
-export const Walker: React.FC<Props> = ({ x, y, walk, phase, breath, blanket = 0, wrap = 0 }) => {
+export const Walker: React.FC<Props> = ({ x, y, walk, phase, breath, blanket = 0, wrap = 0, frame = 0, eyesClosed = 0 }) => {
   const swing = Math.sin(phase) * 16 * walk;
   const bob = -Math.abs(Math.sin(phase)) * 9 * walk;
   const sy = 1 + 0.24 * breath;
@@ -41,6 +46,8 @@ export const Walker: React.FC<Props> = ({ x, y, walk, phase, breath, blanket = 0
     <g transform={`translate(${x} ${y})`}>
       <ellipse cx={0} cy={6} rx={160} ry={24} fill={COLORS.brownDark} opacity={0.18} />
       <g transform={`scale(${sx} ${sy}) translate(0 ${bob})`}>
+        {/* hair falling behind the shoulders */}
+        <rect x={-92} y={-700} width={184} height={200} rx={80} fill={COLORS.brownDark} />
         {/* legs */}
         {[-1, 1].map((s) => (
           <g key={s} transform={`rotate(${s * swing} ${s * 44} -190)`}>
@@ -51,35 +58,32 @@ export const Walker: React.FC<Props> = ({ x, y, walk, phase, breath, blanket = 0
         {/* arms (behind the coat edge) */}
         {[-1, 1].map((s) => (
           <g key={s} transform={`rotate(${s * armSwing - s * armOut} ${s * 125} -505)`}>
-            <path d={`M ${s * 125} -505 Q ${s * 190} -420 ${s * 185} -290`} stroke={COLORS.golden} strokeWidth={48} strokeLinecap="round" fill="none" />
+            <path d={`M ${s * 125} -505 Q ${s * 190} -420 ${s * 185} -290`} stroke={COAT_GREEN} strokeWidth={48} strokeLinecap="round" fill="none" />
             <circle cx={s * 185} cy={-270} r={24} fill={COLORS.creamShade} />
           </g>
         ))}
-        {/* coat */}
+        {/* green coat */}
         <path
           d="M -95 -548 C -135 -540 -150 -500 -150 -440 L -172 -205 Q -174 -165 -132 -165 L 132 -165 Q 174 -165 172 -205 L 150 -440 C 150 -500 135 -540 95 -548 Q 0 -562 -95 -548 Z"
-          fill={COLORS.golden}
+          fill={COAT_GREEN}
         />
-        <path d="M 0 -540 L 0 -175" stroke={COLORS.burntOrange} strokeWidth={6} strokeLinecap="round" opacity={0.35} />
+        <path d="M 0 -540 L 0 -175" stroke={COAT_GREEN_DARK} strokeWidth={6} strokeLinecap="round" opacity={0.6} />
         {[-470, -390, -310].map((by) => (
-          <circle key={by} cx={18} cy={by} r={9} fill={COLORS.burntOrange} />
+          <circle key={by} cx={18} cy={by} r={9} fill={COLORS.golden} />
         ))}
-        {/* neck + scarf */}
+        {/* neck + brown scarf */}
         <rect x={-26} y={-590} width={52} height={50} rx={22} fill={COLORS.creamShade} />
-        <rect x={-92} y={-572} width={184} height={50} rx={25} fill={COLORS.burntOrange} />
-        <rect x={34} y={-540} width={46} height={150} rx={23} fill={COLORS.burntOrange} />
-        {/* head: no face, short hair, no bun */}
-        <circle cx={0} cy={-640} r={74} fill={COLORS.creamShade} />
-        <path d="M -76 -632 C -80 -735 80 -735 76 -632 Q 52 -672 0 -676 Q -52 -672 -76 -632 Z" fill={COLORS.brownDark} />
+        <rect x={-92} y={-572} width={184} height={50} rx={25} fill={COLORS.brown} />
+        <rect x={34} y={-540} width={46} height={150} rx={23} fill={COLORS.brown} />
 
         {/* blanket that hugs back */}
         {blanket > 0 && (
           <g opacity={blanket}>
             <path
-              d="M -130 -590 Q 0 -630 130 -590 Q 182 -565 186 -480 L 194 -255 Q 194 -215 156 -215 L -156 -215 Q -194 -215 -194 -255 L -186 -480 Q -182 -565 -130 -590 Z"
+              d="M -130 -590 Q 0 -560 130 -590 Q 182 -565 186 -480 L 194 -255 Q 194 -215 156 -215 L -156 -215 Q -194 -215 -194 -255 L -186 -480 Q -182 -565 -130 -590 Z"
               fill={COLORS.burntOrange}
             />
-            <Stripes x={-194} y={-590} w={388} h={375} />
+            <Stripes x={-194} y={-575} w={388} h={360} />
             {[-1, 1].map((s) => (
               <g key={s} transform={`rotate(${-s * flap} ${s * 130} -585)`}>
                 <rect x={s > 0 ? 60 : -200} y={-600} width={140} height={350} rx={56} fill={COLORS.burntOrange} />
@@ -89,6 +93,15 @@ export const Walker: React.FC<Props> = ({ x, y, walk, phase, breath, blanket = 0
             ))}
           </g>
         )}
+
+        {/* head with a warm smile; dark medium hair, no bun */}
+        <circle cx={0} cy={-640} r={74} fill={COLORS.creamShade} />
+        <path d="M -80 -626 C -86 -740 86 -740 80 -626 C 66 -664 34 -684 -6 -680 C -44 -676 -70 -656 -80 -626 Z" fill={COLORS.brownDark} />
+        <path d="M -80 -640 Q -92 -590 -84 -556" stroke={COLORS.brownDark} strokeWidth={22} strokeLinecap="round" fill="none" />
+        <path d="M 80 -640 Q 92 -590 84 -556" stroke={COLORS.brownDark} strokeWidth={22} strokeLinecap="round" fill="none" />
+        <g transform="translate(0 -636)">
+          <Face r={74} frame={frame} seed={23} smile={0.85} closed={eyesClosed} />
+        </g>
       </g>
     </g>
   );

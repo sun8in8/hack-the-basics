@@ -23,7 +23,7 @@ import { COLORS, sec } from "../theme";
 
 /* Timeline in seconds. Every value below is derived from this table. */
 export const T = {
-  stairs: [0.6, 4.3], // you walk down the steps; lanterns light
+  stairs: [1.0, 3.6], // you step down 3 steps from the glowing door; lanterns light
   pan1: [4.5, 6.0], // → birdsong jars
   pan2: [10.0, 11.5], // → moustache man
   socksUp: [11.5, 12.7],
@@ -31,16 +31,18 @@ export const T = {
   pan3: [16.0, 17.3], // → woman in velvet
   bottleUp: [17.3, 18.4],
   spray: [18.6, 20.6], // three puffs of mist
-  breath: [21.0, 39.0], // 3 breaths: 1-2-3 in, 1-2-3 out
-  pan4: [39.0, 40.3], // → biscuits
-  hearts: [40.4, 44.0],
-  pan5: [44.0, 45.3], // → blankets
-  blanketFloat: [45.5, 47.2],
-  blanketWrap: [47.2, 49.2],
-  pan6: [49.0, 50.3], // → small boy
-  boyIn: [50.0, 51.6],
-  boyOffer: [51.6, 52.6], // then a pause
-  comforts: [53.6, 56.0], // five comforts float in and stay
+  breath: [21.0, 27.0], // 1 breath: 1-2-3 in, 1-2-3 out
+  pan4: [28.5, 29.8], // → biscuits
+  hearts: [30.0, 34.0],
+  pan5: [35.0, 36.3], // → blankets
+  blanketFloat: [36.8, 39.0], // blanket floats over to you
+  blanketWrap: [39.0, 41.0], // ...and hugs you
+  blanketUnwrap: [43.0, 44.6], // after a long hug, it lets go
+  blanketBack: [44.6, 46.8], // ...and floats back to its pile
+  pan6: [47.6, 48.9], // → small boy
+  boyIn: [48.6, 50.2],
+  boyOffer: [50.2, 51.2], // then a pause
+  comforts: [52.2, 54.6], // five comforts float in and stay
   end: [59.0, 60.0], // fade to cream
 } as const;
 export const MARKET_DURATION = sec(60);
@@ -48,7 +50,7 @@ const S = (k: keyof typeof T) => [sec(T[k][0]), sec(T[k][1])] as [number, number
 
 const FEET = 1610;
 const WALKER_X = 360;
-const BREATHS = 3;
+const BREATHS = 1;
 const easeOutQuad = (t: number) => 1 - (1 - t) * (1 - t);
 
 const useFont = () => {
@@ -109,14 +111,17 @@ export const SecretMarket: React.FC = () => {
   const [spS] = S("spray");
   const puffs = [0, 0.8, 1.6].map((d) => spS + sec(d));
   const squeeze = Math.max(...puffs.map((t0) => fadeInOut(f, t0, t0 + 14, 6)));
+  const walkerEyes = ease(f, [bS, bS + sec(1)], [0, 1]) * ease(f, [bE, bE + sec(1)], [1, 0]);
   const velvetEyes = ease(f, [bS, bS + sec(1.5)], [0, 1]) * ease(f, [bE - sec(1), bE], [1, 0]);
 
-  /* ---- blanket ---- */
+  /* ---- blanket: floats over, hugs you, lets go, floats back to the pile ---- */
   const [blS, blE] = S("blanketFloat");
-  const bt = ease(f, [blS, blE], [0, 1]);
-  const floatOn = f >= blS && f < blE + 12;
-  const capeOn = ease(f, [blE - 6, blE + 6], [0, 1]);
-  const wrap = ease(f, S("blanketWrap"), [0, 1]);
+  const [bbS, bbE] = S("blanketBack");
+  const bt = f < bbS ? ease(f, [blS, blE], [0, 1]) : ease(f, [bbS, bbE], [1, 0]);
+  const floatOn = (f >= blS && f < blE + 12) || (f >= bbS - 12 && f < bbE);
+  const capeOn = ease(f, [blE - 6, blE + 6], [0, 1]) * ease(f, [bbS - 6, bbS + 6], [1, 0]);
+  const wrap = ease(f, S("blanketWrap"), [0, 1]) * ease(f, S("blanketUnwrap"), [1, 0]);
+  const blanketOnPile = f < blS || f >= bbE;
   const blanketStart = { x: STALL_X + 40, y: COUNTER_Y - 168 };
   const blanketEnd = { x: WALKER_X, y: FEET - 395 };
   const bx = blanketStart.x + (blanketEnd.x - blanketStart.x) * bt;
@@ -213,7 +218,7 @@ export const SecretMarket: React.FC = () => {
               <Counter />
               <FoldedBlanket x={40} y={-36} w={330} h={70} color={COLORS.deepRed} />
               <FoldedBlanket x={40} y={-102} w={310} h={64} color={COLORS.golden} />
-              {f < blS && <FoldedBlanket x={40} y={-168} w={290} h={64} />}
+              {blanketOnPile && <FoldedBlanket x={40} y={-168} w={290} h={64} />}
             </g>
           )}
         </g>
@@ -237,19 +242,19 @@ export const SecretMarket: React.FC = () => {
           </g>
         )}
 
-        <g opacity={walkerIn}>
-          <Walker x={walkerX} y={walkerY} walk={walk} phase={phase} breath={breath} blanket={capeOn} wrap={wrap} />
-        </g>
-
-        {/* the blanket floating over to you */}
+        {/* the blanket floating over (it passes behind you, then wraps round the front) */}
         {floatOn && (
           <g opacity={1 - capeOn}>
             <FoldedBlanket x={bx} y={by} w={290 + 150 * bt} h={64 + 330 * bt} rot={Math.sin(bt * Math.PI) * -8} />
           </g>
         )}
+        <g opacity={walkerIn}>
+          <Walker x={walkerX} y={walkerY} walk={walk} phase={phase} breath={breath} blanket={capeOn} wrap={wrap} frame={f} eyesClosed={walkerEyes} />
+        </g>
+
         {/* little hearts once the blanket hugs you */}
         {new Array(4).fill(0).map((_, i) => {
-          const t0 = sec(T.blanketWrap[1] - 0.4) + i * 10;
+          const t0 = sec(T.blanketWrap[1] - 0.4) + i * 12;
           const life = sec(2.2);
           if (f < t0 || f > t0 + life) return null;
           const t = (f - t0) / life;

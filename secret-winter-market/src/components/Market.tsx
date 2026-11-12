@@ -75,11 +75,12 @@ export const Hall: React.FC<{ from: number; to: number; frame: number; lit0: [nu
 };
 
 /* ---------- Entrance: steps down from a glowing doorway (bay 0) ---------- */
-export const STEP = { x0: 60, top: 1010, run: 100, rise: 100, n: 6 };
+export const STEP = { x0: 170, top: 1310, run: 100, rise: 100, n: 3 };
 export const Stairs: React.FC = () => (
   <g>
-    <path d={`M 24 1010 L 24 700 A 116 116 0 0 1 256 700 L 256 1010 Z`} fill={COLORS.goldenLight} opacity={0.85} />
-    <Glow id="door" x={140} y={820} rx={300} ry={340} opacity={0.6} />
+    <path d={`M ${STEP.x0 - 70} ${STEP.top} L ${STEP.x0 - 70} 700 A 155 155 0 0 1 ${STEP.x0 + 240} 700 L ${STEP.x0 + 240} ${STEP.top} Z`} fill={COLORS.brownDark} />
+    <path d={`M ${STEP.x0 - 50} ${STEP.top} L ${STEP.x0 - 50} 710 A 135 135 0 0 1 ${STEP.x0 + 220} 710 L ${STEP.x0 + 220} ${STEP.top} Z`} fill={COLORS.goldenLight} opacity={0.85} />
+    <Glow id="door" x={STEP.x0 + 85} y={950} rx={320} ry={420} opacity={0.6} />
     {new Array(STEP.n).fill(0).map((_, i) => {
       const top = STEP.top + STEP.rise * i;
       const right = STEP.x0 + 150 + STEP.run * i;
