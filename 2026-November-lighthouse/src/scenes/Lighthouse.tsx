@@ -10,7 +10,6 @@ import {
   Easing,
 } from "remotion";
 import { ease, fadeInOut } from "../anim";
-import { FallingLeaves } from "../components/FallingLeaves";
 import { Keeper, Pt } from "../components/Keeper";
 import {
   Candle,
@@ -274,8 +273,8 @@ export const Lighthouse: React.FC = () => {
   const tagOn = fadeInOut(f, s(7.2), s(12.8), 12);
   const tagRise = spring({ frame: f - s(7.2), fps, config: { damping: 18, stiffness: 90 } });
 
-  // room light: dim to start, warmer as each flame is lit
-  const dark = 0.55 - 0.13 * candleLit - 0.14 * lanternLit;
+  // room light: dark to start (night), warmer as each flame is lit
+  const dark = 0.7 - 0.18 * candleLit - 0.2 * lanternLit;
 
   // closing heart from the lantern
   const lanternHeart = ease(f, [s(56), s(58.6)], [0, 1], (t) => t);
@@ -293,8 +292,7 @@ export const Lighthouse: React.FC = () => {
             <GlowDefs />
             <g transform={`translate(${LAMP.x} ${LAMP.y}) scale(${zoom}) translate(${-LAMP.x} ${-LAMP.y})`}>
               <Seascape frame={f} lamp={lamp} beam={beam} />
-              <FallingLeaves count={14} seed="sea-leaves" opacity={0.8} />
-              {/* boat on top of the leaves so it stays clear */}
+              
               <SailBoat {...boat} frame={f} />
               {homeHeart > 0 && homeHeart < 1 && (
                 <path
@@ -330,7 +328,7 @@ export const Lighthouse: React.FC = () => {
               </radialGradient>
               <mask id="roomDark" maskUnits="userSpaceOnUse" x={0} y={0} width={WIDTH} height={HEIGHT}>
                 <rect width={WIDTH} height={HEIGHT} fill="#fff" />
-                <circle cx={WIN.x} cy={WIN.y} r={520} fill="url(#hole)" opacity={0.85} />
+                <circle cx={WIN.x} cy={WIN.y} r={380} fill="url(#hole)" opacity={0.4} />
                 <circle cx={mTip.x} cy={mTip.y} r={300} fill="url(#hole)" opacity={matchFlame * matchOpacity * 0.6} />
                 <circle cx={cFlame.x} cy={cFlame.y} r={460} fill="url(#hole)" opacity={candleLit * 0.75} />
                 <circle cx={LANTERN_FLAME.x} cy={LANTERN_FLAME.y} r={640} fill="url(#hole)" opacity={lanternLit * 0.85} />
@@ -343,10 +341,10 @@ export const Lighthouse: React.FC = () => {
                 <Seascape
                   frame={f}
                   lighthouse={false}
+                  moon={{ x: 650, y: 920, r: 60 }}
                   boat={{ x: 640 + Math.sin(f * 0.02) * 18, y: 1092, scale: 0.16, facing: -1, opacity: f < s(40) ? 1 : 0 }}
                 />
               </g>
-              <FallingLeaves count={14} seed="win-leaves" opacity={0.8} />
             </g>
 
             {/* stone wall */}
@@ -448,7 +446,7 @@ export const Lighthouse: React.FC = () => {
             />
 
             {/* the dim room */}
-            <rect width={WIDTH} height={HEIGHT} fill={COLORS.brownDark} opacity={dark} mask="url(#roomDark)" />
+            <rect width={WIDTH} height={HEIGHT} fill={COLORS.nightSky} opacity={dark} mask="url(#roomDark)" />
 
             {/* flames and their glow sit above the dimness */}
             <Glow x={mTip.x} y={mTip.y - 20} r={150} opacity={matchFlame * matchOpacity * 0.8} frame={f} />

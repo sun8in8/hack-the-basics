@@ -115,25 +115,28 @@ export const Keeper: React.FC<Props> = ({
         </g>
 
         <g transform={`translate(0 ${-lift}) rotate(${tilt} 0 -320)`}>
+          {/* medium-length hair, behind her neck and scarf */}
+          <path
+            transform="translate(0 -440)"
+            d="M -102 6 C -108 -84 -54 -114 0 -114 C 54 -114 108 -84 102 6 C 106 60 116 104 118 132 Q 120 152 98 152 L -98 152 Q -120 152 -118 132 C -116 104 -106 60 -102 6 Z"
+            fill={COLORS.brownDark}
+            strokeLinejoin="round"
+          />
           {/* neck */}
           <rect x={-24} y={-352} width={48} height={60} rx={22} fill={COLORS.creamShade} />
           {/* scarf */}
-          <rect x={-86} y={-322} width={172} height={48} rx={24} fill={COLORS.golden} />
-          <g transform="rotate(10 44 -300)">
-            <rect x={26} y={-306} width={42} height={128} rx={21} fill={COLORS.golden} />
+          <rect x={-86} y={-322} width={172} height={48} rx={24} fill={COLORS.sage} />
+          <g transform="rotate(-14 44 -300)">
+            <rect x={26} y={-306} width={42} height={128} rx={21} fill={COLORS.sage} />
             <path
               d="M 34 -226 L 60 -226 M 34 -200 L 60 -200"
-              stroke={COLORS.burntOrange}
+              stroke={COLORS.sageDark}
               strokeWidth={8}
               strokeLinecap="round"
             />
           </g>
 
           <g transform="translate(0 -440)">
-            {/* hair behind */}
-            <ellipse cx={0} cy={4} rx={102} ry={112} fill={COLORS.brownDark} />
-            <circle cx={0} cy={-108} r={46} fill={COLORS.brownDark} />
-            <circle cx={-14} cy={-122} r={14} fill={COLORS.cream} opacity={0.12} />
             {/* ears */}
             <circle cx={-80} cy={20} r={17} fill={COLORS.creamShade} />
             <circle cx={80} cy={20} r={17} fill={COLORS.creamShade} />

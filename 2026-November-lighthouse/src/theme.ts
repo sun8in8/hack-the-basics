@@ -10,6 +10,15 @@ export const COLORS = {
   creamShade: "#F6E2C0",
   goldenLight: "#F3C978",
   brownDark: "#553319",
+  // Night (lighthouse keeper Short): sky, sea and silhouettes
+  nightSky: "#141B2E",
+  nightSkyLow: "#2B3A5C",
+  nightSea: "#1A2440",
+  nightWave: "#33466E",
+  nightRock: "#0E1424",
+  // Soft sage green (the keeper's scarf)
+  sage: "#9DB58A",
+  sageDark: "#7A9468",
 } as const;
 
 export const LEAF_COLORS = [

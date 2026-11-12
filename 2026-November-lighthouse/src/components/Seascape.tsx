@@ -1,4 +1,5 @@
 import React from "react";
+import { random } from "remotion";
 import { COLORS, HEIGHT, WIDTH } from "../theme";
 
 export const HORIZON = 1060;
@@ -15,7 +16,13 @@ type Props = {
   /** Beam: opacity 0..1, length in px, angle in degrees (0 = pointing right). */
   beam?: { opacity: number; length: number; angle: number };
   boat?: Boat;
+  /** Where the moon sits (scene coordinates). */
+  moon?: { x: number; y: number; r: number };
 };
+
+/** Soft 4-point star. */
+const STAR = (s: number) =>
+  `M 0 ${-s} Q ${s * 0.18} ${-s * 0.18} ${s} 0 Q ${s * 0.18} ${s * 0.18} 0 ${s} Q ${-s * 0.18} ${s * 0.18} ${-s} 0 Q ${-s * 0.18} ${-s * 0.18} 0 ${-s} Z`;
 
 /** A sailing boat: rounded hull, cream sails. (0, 0) is the waterline centre. */
 export const SailBoat: React.FC<Boat & { frame: number }> = ({ x, y, scale, facing = 1, opacity = 1, frame }) => {
@@ -43,22 +50,25 @@ export const SailBoat: React.FC<Boat & { frame: number }> = ({ x, y, scale, faci
   );
 };
 
-/** Evening sea: dusk sky, the sun sinking into the water, gentle waves. Drawn as a <g>. */
-export const Seascape: React.FC<Props> = ({ frame, lighthouse = true, lamp = 0, beam, boat }) => {
-  const sunX = 760;
+/** Night sea: dark sky, moon and stars, moonlight on gentle waves. Drawn as a <g>. */
+export const Seascape: React.FC<Props> = ({
+  frame,
+  lighthouse = true,
+  lamp = 0,
+  beam,
+  boat,
+  moon = { x: 820, y: 430, r: 78 },
+}) => {
+  const moonX = moon.x;
   return (
     <g>
       <defs>
         <linearGradient id="seaSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={COLORS.cream} />
-          <stop offset="55%" stopColor={COLORS.goldenLight} />
+          <stop offset="0%" stopColor={COLORS.nightSky} />
+          <stop offset="55%" stopColor={COLORS.nightSkyLow} />
         </linearGradient>
-        <linearGradient id="seaDusk" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={COLORS.golden} />
-          <stop offset="55%" stopColor={COLORS.burntOrange} />
-        </linearGradient>
-        <radialGradient id="seaSun">
-          <stop offset="0%" stopColor={COLORS.cream} stopOpacity={0.9} />
+        <radialGradient id="moonGlow">
+          <stop offset="0%" stopColor={COLORS.cream} stopOpacity={0.45} />
           <stop offset="100%" stopColor={COLORS.cream} stopOpacity={0} />
         </radialGradient>
         <linearGradient id="beamFade" x1="0" y1="0" x2="1" y2="0">
@@ -71,14 +81,27 @@ export const Seascape: React.FC<Props> = ({ frame, lighthouse = true, lamp = 0, 
       </defs>
 
       <rect width={WIDTH} height={HEIGHT} fill="url(#seaSky)" />
-      <rect width={WIDTH} height={HEIGHT} fill="url(#seaDusk)" opacity={0.6} />
 
-      <circle cx={sunX} cy={HORIZON} r={280} fill="url(#seaSun)" opacity={0.6} />
-      <circle cx={sunX} cy={HORIZON + 30} r={110} fill={COLORS.cream} opacity={0.9} />
+      {/* stars, twinkling slowly */}
+      {new Array(46).fill(0).map((_, i) => {
+        const r = (k: string) => random(`star-${i}-${k}`);
+        const sx = r("x") * WIDTH;
+        const sy = 60 + r("y") * (HORIZON - 120);
+        if (Math.hypot(sx - moon.x, sy - moon.y) < moon.r * 2.2) return null;
+        const size = 4 + r("s") * 9;
+        const tw = 0.55 + 0.3 * Math.sin(frame * (0.03 + r("f") * 0.03) + r("p") * 6.28);
+        return <path key={i} d={STAR(size)} transform={`translate(${sx} ${sy})`} fill={COLORS.cream} opacity={tw} />;
+      })}
+
+      {/* moon */}
+      <circle cx={moon.x} cy={moon.y} r={moon.r * 3.2} fill="url(#moonGlow)" />
+      <circle cx={moon.x} cy={moon.y} r={moon.r} fill={COLORS.cream} />
+      <circle cx={moon.x - moon.r * 0.3} cy={moon.y - moon.r * 0.2} r={moon.r * 0.18} fill={COLORS.creamShade} />
+      <circle cx={moon.x + moon.r * 0.35} cy={moon.y + moon.r * 0.3} r={moon.r * 0.12} fill={COLORS.creamShade} />
 
       {/* sea */}
-      <rect x={0} y={HORIZON} width={WIDTH} height={HEIGHT - HORIZON} fill={COLORS.brown} />
-      {/* sun's path on the water */}
+      <rect x={0} y={HORIZON} width={WIDTH} height={HEIGHT - HORIZON} fill={COLORS.nightSea} />
+      {/* moonlight on the water */}
       {[0, 1, 2, 3, 4, 5].map((k) => {
         const w = 200 - k * 26;
         const yy = HORIZON + 28 + k * 34;
@@ -86,9 +109,9 @@ export const Seascape: React.FC<Props> = ({ frame, lighthouse = true, lamp = 0, 
         return (
           <path
             key={k}
-            d={`M ${sunX - w / 2 + dx} ${yy} L ${sunX + w / 2 + dx} ${yy}`}
-            stroke={COLORS.golden}
-            strokeOpacity={0.75 - k * 0.1}
+            d={`M ${moonX - w / 2 + dx} ${yy} L ${moonX + w / 2 + dx} ${yy}`}
+            stroke={COLORS.cream}
+            strokeOpacity={0.45 - k * 0.06}
             strokeWidth={12}
             strokeLinecap="round"
           />
@@ -110,7 +133,7 @@ export const Seascape: React.FC<Props> = ({ frame, lighthouse = true, lamp = 0, 
           <path
             key={k}
             d={`M ${wx - ww / 2 + dx} ${wy} Q ${wx - ww / 4 + dx} ${wy - 16} ${wx + dx} ${wy} Q ${wx + ww / 4 + dx} ${wy - 16} ${wx + ww / 2 + dx} ${wy}`}
-            stroke={COLORS.deepRed}
+            stroke={COLORS.nightWave}
             strokeWidth={10}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -124,10 +147,10 @@ export const Seascape: React.FC<Props> = ({ frame, lighthouse = true, lamp = 0, 
           {/* rocks */}
           <path
             d="M -40 1920 L -40 1290 C 60 1230 270 1240 380 1330 C 450 1390 480 1470 520 1560 C 560 1660 600 1780 640 1920 Z"
-            fill={COLORS.brownDark}
+            fill={COLORS.nightRock}
           />
-          <path d="M 60 1400 Q 140 1370 220 1400" stroke={COLORS.brown} strokeWidth={14} strokeLinecap="round" fill="none" />
-          <path d="M 260 1560 Q 330 1530 400 1570" stroke={COLORS.brown} strokeWidth={14} strokeLinecap="round" fill="none" />
+          <path d="M 60 1400 Q 140 1370 220 1400" stroke={COLORS.nightSea} strokeWidth={14} strokeLinecap="round" fill="none" />
+          <path d="M 260 1560 Q 330 1530 400 1570" stroke={COLORS.nightSea} strokeWidth={14} strokeLinecap="round" fill="none" />
           {/* tower */}
           <path d="M 150 1310 L 178 820 Q 230 810 282 820 L 310 1310 Z" fill={COLORS.cream} strokeLinejoin="round" stroke={COLORS.cream} strokeWidth={10} />
           <g clipPath="url(#towerClip)">
