@@ -49,5 +49,5 @@ To re-time it (for example to match a voiceover), edit the `T` table at the top 
 
 The full house style (colours, font, easing, timings, shapes, Pip's character sheet) is in
 [`STYLE_GUIDE.md`](STYLE_GUIDE.md), with reference stills in [`style-guide/`](style-guide/).
-Claude Code picks it up automatically through the project skill `/yt-26winter-animation`
-(`.claude/skills/yt-26winter-animation/SKILL.md`).
+This guide documents the Pip Short as built. The reusable house style now lives in the
+`/yt-26winter-animation` skill on Su's claude.ai account, which has no fixed characters.
